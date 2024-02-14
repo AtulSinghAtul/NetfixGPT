@@ -1,12 +1,19 @@
 import React, { useState, useRef } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
+  const navigate = useNavigate();
 
-  const name = useRef(null);
+  // const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
@@ -14,17 +21,56 @@ const Login = () => {
     setIsSignInForm(!isSignInForm);
   }
 
-  function handleButtonClicked() {
+  const handleButtonClicked = () => {
     // validate the form data
     const message = checkValidData(
-      name.current.value,
-      email.current.value,
-      password.current.value
+      email?.current?.value,
+      password?.current?.value
     );
     setErrorMessage(message);
 
+    if (message) return;
+
     // Sign in/Sign up
-  }
+    if (!isSignInForm) {
+      //Sign up Authentication logic
+      createUserWithEmailAndPassword(
+        auth,
+
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed up
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " - " + errorMessage);
+        });
+    } else {
+      // Sign in logic
+      signInWithEmailAndPassword(
+        auth,
+        email?.current?.value,
+        password?.current?.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + " - " + errorMessage);
+        });
+    }
+  };
 
   return (
     <div className="">
@@ -47,7 +93,7 @@ const Login = () => {
 
         {!isSignInForm && (
           <input
-            ref={name}
+            // ref={name}
             type="text"
             placeholder="Full Name"
             className="p-4 m-2 w-full bg-[#333333] rounded-sm outline-none "

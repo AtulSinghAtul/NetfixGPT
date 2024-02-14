@@ -10,11 +10,18 @@
 - useRef Hook
 - Authentication - Using Google Firebase
 - Steps for deployment
+
   - 0. Install firebase CLI `npm install -g firebase-tools`
   - 1. Firebase login - `firebase login`
   - 2. Initilize Firebase - `firebase init`, then select
        hosting
   - 3. Deploy command - `firebase deploy`
+
+- Create Signup User Account - firebase authentication
+- Implement Sign In user Api - firebase authentication
+- Created Redux Store with userSlice
+- Implemented Sign out
+- Update Profile
 
 ## Features
 
