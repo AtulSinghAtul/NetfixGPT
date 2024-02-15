@@ -6,14 +6,18 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import { auth } from "../utils/firebase";
-import { useNavigate } from "react-router-dom";
+import { updateProfile } from "firebase/auth";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/storeSlices/userSlice";
+import { BACKGROUND_IMG, USER_AVATAR } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
-  const navigate = useNavigate();
 
-  // const name = useRef(null);
+  const dispatch = useDispatch();
+
+  const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
@@ -36,7 +40,6 @@ const Login = () => {
       //Sign up Authentication logic
       createUserWithEmailAndPassword(
         auth,
-
         email.current.value,
         password.current.value
       )
@@ -44,7 +47,31 @@ const Login = () => {
           // Signed up
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse");
+
+          // update user name
+          updateProfile(auth.currentUser, {
+            displayName: name?.current?.value,
+            photoURL: USER_AVATAR,
+          })
+            .then(() => {
+              // Profile updated!
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+
+              dispatch(
+                addUser({
+                  uid: uid,
+                  email: email,
+                  displayName: displayName,
+                  photoURL: photoURL,
+                })
+              );
+              console.log("Profile updated!");
+            })
+            .catch((error) => {
+              // An error occurred
+              // setErrorMessage(message);
+              console.log("Got error");
+            });
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -62,7 +89,6 @@ const Login = () => {
           // Signed in
           const user = userCredential.user;
           console.log(user);
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -77,7 +103,7 @@ const Login = () => {
       <Header />
       <div className="absolute  ">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/5e16108c-fd30-46de-9bb8-0b4e1bbbc509/29d8d7d7-83cc-4b5f-aa9b-6fd4f68bfaa6/IN-en-20240205-popsignuptwoweeks-perspective_alpha_website_large.jpg"
+          src={BACKGROUND_IMG}
           alt="background-img"
           className="w-full min-h-screen -z-50"
         />
@@ -93,7 +119,7 @@ const Login = () => {
 
         {!isSignInForm && (
           <input
-            // ref={name}
+            ref={name}
             type="text"
             placeholder="Full Name"
             className="p-4 m-2 w-full bg-[#333333] rounded-sm outline-none "
