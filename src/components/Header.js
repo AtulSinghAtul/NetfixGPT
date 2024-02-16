@@ -5,12 +5,15 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, removeUser } from "../utils/storeSlices/userSlice";
 import { onAuthStateChanged } from "firebase/auth";
-import { LOGO } from "../utils/constants";
+import { LOGO, SUPPORTED_LANGUES } from "../utils/constants";
+import { toggleGptSearch } from "../utils/storeSlices/gptSlice";
+import { changeSearchLanguage } from "../utils/storeSlices/configSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((store) => store.user);
+  const gptLangToggle = useSelector((store) => store.gpt.toggleGptSearchView);
   // console.log(user);
 
   const handleSignout = () => {
@@ -48,6 +51,15 @@ const Header = () => {
     return () => unsubscribe();
   }, []);
 
+  const handleGptSearchClick = () => {
+    dispatch(toggleGptSearch());
+  };
+
+  const langHandleChange = (e) => {
+    //Note:- event ki jagah ham useRef() bhi use kar sakte hain select ki value nikalne k liye
+    dispatch(changeSearchLanguage(e.target.value));
+  };
+
   return (
     <div className="absolute w-screen bg-gradient-to-b from-black z-10  flex justify-between items-center">
       <img className="w-[220px]" src={LOGO} alt="netflix-logo" />
@@ -58,6 +70,25 @@ const Header = () => {
             className="flex
           justify-center items-center gap-2"
           >
+            {gptLangToggle && (
+              <select
+                className="bg-black text-white"
+                onClick={langHandleChange}
+              >
+                {SUPPORTED_LANGUES.map((lang) => (
+                  <option key={lang.identifier} value={lang.identifier}>
+                    {lang.name}
+                  </option>
+                ))}
+              </select>
+            )}
+
+            <button
+              onClick={handleGptSearchClick}
+              className="text-white text-sm bg-purple-600 px-4 py-2 rounded-md"
+            >
+              {gptLangToggle ? "Go To Home" : "GPT Search"}
+            </button>
             <img className="w-[50px]" src={user?.photoURL} alt="profile-img" />
 
             <button

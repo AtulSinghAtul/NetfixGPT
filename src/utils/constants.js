@@ -17,3 +17,9 @@ export const API_OPTIONS = {
 };
 
 export const poster_path = "https://image.tmdb.org/t/p/original/";
+
+export const SUPPORTED_LANGUES = [
+  { identifier: "en", name: "English" },
+  { identifier: "hindi", name: "Hindi" },
+  { identifier: "spanish", name: "Spanish" },
+];
