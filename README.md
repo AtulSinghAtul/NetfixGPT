@@ -43,8 +43,16 @@
 - created custom hooks usePopularMovies, useTopRatedMovies and useUpComingMovies
 - Created GPT Search Page
 - Created GPT Search Bar
-- Multi-Language Features in our App
--
+- (Bonus) Multi-Language Features in our App
+- Gpt Open AI Api Key
+- Gpt Search Api call
+- fetched gptMoviesSuggestions from TMDB
+- created gptSlice added data
+- Reused Movie list component to make movie suggestion container
+- Memoization
+- Added .env file
+- Adding .env file to gitignore
+- Made our site responsive
 
 ## Features
 
