@@ -11,7 +11,7 @@ const useMovieTrailer = (movieId) => {
       `https://api.themoviedb.org/3/movie/${movieId}/videos`,
       API_OPTIONS
     );
-    const json = await data.json();
+    const json = await data?.json();
 
     // dispatch(addNowPlayingMovies(json));
     const filterData = json.results.filter((video) => video.type === "Trailer");

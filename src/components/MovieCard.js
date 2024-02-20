@@ -2,6 +2,8 @@ import React from "react";
 import { poster_path } from "../utils/constants";
 
 const MovieCard = ({ posterIdPath }) => {
+  if (!posterIdPath) return null;
+
   return (
     <div className="flex mr-4">
       <img

@@ -65,3 +65,25 @@
 - NetflixGPT
   - Search Bar
   - Movie Suggestions
+
+## Memoization?
+
+- Suppose in my redux store already had the trailer, popular or upcoming video should I re-fetch it API - No, this concept is known as memoization.
+
+- Suppose 1 lack users are on your website they are going on different pages, so you can save so many api calls only writing 3-4 lines of code.
+
+```
+const trailerVideo = useSelector((store)=>store.movies.trailerVideo)
+
+useEffect(()=>{
+  if(!trailerVideo) useMovieTrailer()
+},[])
+```
+
+```
+const nowPlayingMovies = useSelector((store)=>store.movies.nowPlayingMovies)
+
+useEffect(()=>{
+  if(!nowPlayingMovies) useNowPlayingMovies()
+},[])
+```

@@ -1,13 +1,16 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import languages from "../utils/languageConstant";
 import openai from "../utils/openai";
 import { useRef } from "react";
+import { addGptMovieResult } from "../utils/storeSlices/gptSlice";
 import { API_OPTIONS } from "../utils/constants";
 
 const GptSearchBar = () => {
   const langKey = useSelector((store) => store.lang.lang);
   const gptSearchText = useRef(null);
   console.log(gptSearchText?.current?.value);
+
+  const dispatch = useDispatch();
 
   //* Search movie in TMDB API using GPT movie search suggestions
   const searchMovieTMDB = async (movie) => {
@@ -16,9 +19,9 @@ const GptSearchBar = () => {
       API_OPTIONS
     );
 
-    const json = data.json();
+    const json = data?.json();
 
-    return json.results;
+    return json?.results;
   };
 
   const handleGptSearchClick = async () => {
@@ -46,9 +49,16 @@ const GptSearchBar = () => {
 
     const promiseArray = gptMovies.map((movie) => searchMovieTMDB(movie));
     console.log(promiseArray); //[Promise, Promise, Promise, Promise, Promise]
-    const tmdbMovieResult = await Promise.all(promiseArray);
+    const tmdbMovieResults = await Promise.all(promiseArray);
 
-    console.log(tmdbMovieResult);
+    console.log(tmdbMovieResults);
+
+    dispatch(
+      addGptMovieResult({
+        movieName: gptMovies,
+        movieResults: tmdbMovieResults,
+      })
+    );
   };
 
   return (
